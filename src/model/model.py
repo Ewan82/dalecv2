@@ -1,3 +1,5 @@
+"""Functions for and related to the DALECV2 model.
+"""
 import numpy as np
 import ad
 import ad.admath as adm
