@@ -1,6 +1,6 @@
 import numpy as np
-#import ad
-
+import ad
+import ad.admath as adm
 
 def fitpolynomial(evalpoint, multfac):
     """Polynomial used to find phi_f and phi (offset terms used in phi_onset 
@@ -12,6 +12,14 @@ def fitpolynomial(evalpoint, multfac):
                       -0.188459767342504]
     phi = np.polyval(polycoeffs, evalpoint)*multfac
     return phi
+    
+    
+def temp_term(Theta, dC, x):
+    """Calculates the temperature exponent factor for carbon pool respirations
+    given a value for Theta parameter, a dataClass (dC) and a time step x.
+    """
+    temp_term = 0.5*adm.exp(Theta*dC.t_mean[x])
+    return temp_term
     
 
 def acm(cf, clma, ceff, dC, x):
@@ -50,9 +58,9 @@ def phi_onset(d_onset, cronset, dC, x):
     releasecoeff = np.sqrt(2.)*cronset / 2.
     magcoeff = (np.log(1.+1e-3) - np.log(1e-3)) / 2.
     offset = fitpolynomial(1+1e-3, releasecoeff)
-    phi_onset = (2. / np.sqrt(np.pi))*(magcoeff / releasecoeff)*np.exp(-( \
-                np.sin((dC.D[x] - d_onset + offset) / dC.radconv)*dC.radconv /\
-                releasecoeff)**2)
+    phi_onset = (2. / np.sqrt(np.pi))*(magcoeff / releasecoeff)*adm.exp(-( \
+                adm.sin((dC.D[x] - d_onset + offset) / dC.radconv)*(dC.radconv /\
+                releasecoeff))**2)
     return phi_onset
 
     
@@ -62,19 +70,97 @@ def phi_fall(d_fall, crfall, clspan, dC, x):
     x and returns a value for phi_fall.
     """
     releasecoeff = np.sqrt(2.)*crfall / 2.
-    magcoeff = (np.log(clspan) - np.log(clspan -1.)) / 2.
+    magcoeff = (adm.log(clspan) - adm.log(clspan -1.)) / 2.
     offset = fitpolynomial(clspan, releasecoeff)
-    phi_fall = (2. / np.sqrt(np.pi))*(magcoeff / releasecoeff)*np.exp(-( \
-                np.sin((dC.D[x] - d_fall + offset) / dC.radconv)*dC.radconv / \
+    phi_fall = (2. / np.sqrt(np.pi))*(magcoeff / releasecoeff)*adm.exp(-( \
+                adm.sin((dC.D[x] - d_fall + offset) / dC.radconv)*dC.radconv / \
                 releasecoeff)**2)
     return phi_fall
     
-
-def dalecv2(clab, cf, cr, cw, cl, cs, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10,
-            p12, p13, p14, p15, p16, p27, dC, x):
-            return clab
             
+def dalecv2(clab, cf, cr, cw, cl, cs, theta_min, f_auto, f_fol, f_roo, clspan,
+            theta_woo, theta_roo, theta_lit, theta_som, Theta, ceff, d_onset, 
+            f_lab, cronset, d_fall, crfall, clma, dC, x):
+    """DALECV2 carbon balance model 
+    -------------------------------
+    evolves carbon pools to the next time step, taking the 6 carbon pool values
+    and 17 parameters at time t and evolving them to time t+1. Function also 
+    requires a dataClass (dC) and a time step x.
+    """
+    clab2 = (1 - phi_onset(d_onset, cronset, dC, x))*clab + (1-f_auto)*(1-f_fol)\
+            *f_lab*acm(cf, clma, ceff, dC, x)
+    cf2 = (1 - phi_fall(d_fall, crfall, clspan, dC, x))*cf + \
+          phi_onset(d_onset, cronset, dC, x)*clab + (1-f_auto)*f_fol*\
+          acm(cf, clma, ceff, dC, x)
+    cr2 = (1 - theta_roo)*cr + (1-f_auto)*(1-f_fol)*(1-f_lab)*f_roo*\
+          acm(cf, clma, ceff, dC, x)
+    cw2 = (1 - theta_woo)*cw + (1-f_auto)*(1-f_fol)*(1-f_lab)*(1-f_roo)*\
+          acm(cf, clma, ceff, dC, x)
+    cl2 = (1-(theta_lit+theta_min)*temp_term(Theta, dC, x))*cl + theta_roo*cr \
+          +phi_fall(d_fall, crfall, clspan, dC, x)*cf
+    cs2 = (1 - theta_som*temp_term(Theta, dC, x))*cs + theta_woo*cw + \
+          theta_min*temp_term(Theta, dC, x)*cl
+    return np.array((clab2, cf2, cr2, cw2, cl2, cs2, theta_min, f_auto, f_fol, 
+           f_roo, clspan, theta_woo, theta_roo, theta_lit, theta_som, Theta, ceff, 
+           d_onset, f_lab, cronset, d_fall, crfall, clma))
+           
+           
+def dalecv2_input(p, dC, x):
+    """DALEC model passes a list or array of parameters to the function dalecv2
+    takes, a list of parameters (p), a dataClass (dC) and a time step (x).
+    """
+    dalecoutput = dalecv2(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8],
+                          p[9], p[10], p[11], p[12], p[13], p[14], p[15], p[16],
+                          p[17], p[18], p[19], p[20], p[21], p[22], dC, x)
+    return dalecoutput
     
     
+def lin_dalecv2(pvals, dC, x):
+    """Linear DALEC model passes a list or array of parameters to the function 
+    dalecv2 and returns a linearized model M for timestep xi. Takes, a list of 
+    parameters (pvals), a dataClass (dC) and a time step (x).
+    """
+    p = ad.adnumber(pvals)
+    dalecoutput = dalecv2(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8],
+                          p[9], p[10], p[11], p[12], p[13], p[14], p[15], p[16],
+                          p[17], p[18], p[19], p[20], p[21], p[22], dC, x)
+    lin_model = np.matrix(ad.jacobian(dalecoutput, p))
+    return dalecoutput, lin_model
     
     
+def mod_list(pvals, dC, start, fin):
+    """Creates an array of evolving model values using dalecv2_input function.
+    Takes a list of initial param values, a dataClass (dC) and start and finish
+    time.
+    """
+    mod_list = np.concatenate((np.array([pvals]),\
+                               np.ones((fin - start, len(pvals)))*-9999.))
+    for x in xrange(start, fin):
+        mod_list[(x+1) - start] = dalecv2_input(mod_list[x-start], dC, x)
+    return mod_list
+    
+    
+def linmod_list(pvals, dC, start, fin):
+    """Creates an array of linearized models (Mi's) taking a list of initial 
+    param values, a dataClass (dC) and a start and finish time.
+    """
+    mod_list = np.concatenate((np.array([pvals]),\
+                               np.ones((fin - start, len(pvals)))*-9999.))
+    matlist = np.ones((fin - start,23,23))*-9999.
+    for x in xrange(start, fin):
+        mod_list[(x+1)-start], matlist[x-start] =\
+                                          lin_dalecv2(mod_list[x-start], dC, x)
+    return matlist
+    
+    
+def linmod_evolve(pvals, matlist, dC, start, fin):
+    """evoles initial start (pvals) forward using given matrix list (matlist)
+    of linearized models, also takes a dataClass (dC) and a start and finish 
+    point.
+    """    
+    linmod_list = np.concatenate((np.array([pvals]),\
+                                  np.ones((fin - start, len(pvals)))*-9999.))
+    for x in xrange(start, fin):
+        linmod_list[(x+1)-start] = np.array(matlist[x-start]*\
+                                   np.matrix(linmod_list[x-start]).T).T
+    return linmod_list

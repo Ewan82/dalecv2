@@ -1,6 +1,7 @@
 import numpy as np
 import os
 import re
+import collections as col
 
 class dalecData( ): 
 
@@ -48,14 +49,15 @@ class dalecData( ):
         self.p16 = 120. #crfall, leaf fall period         (10 - 100)
         self.p17 = 52. #clma, leaf mass per area          (10 - 400)gCm^-2
   
-        self.paramdict = {'clab': self.clab, 'cf': self.cf, 'cr': self.cr, 
-                       'cw': self.cw, 'cl': self.cl, 'cs': self.cs, 
-                       'theta_min': self.p1, 'f_auto': self.p2, 'f_fol': self.p3,
-                       'f_roo': self.p4, 'clspan': self.p5, 'theta_woo': self.p6,
-                       'theta_roo': self.p7, 'theta_lit': self.p8, 'theta_som': self.p9,
-                       'Theta': self.p10, 'ceff': self.p11, 'd_onset': self.p12,
-                       'f_lab': self.p13, 'cronset': self.p14, 'd_fall': self.p15,
-                       'crfall': self.p16, 'clma': self.p17}
+        self.paramdict = col.OrderedDict([('clab', self.clab), ('cf', self.cf), 
+                       ('cr', self.cr), ('cw', self.cw), ('cl', self.cl),
+                       ('cs', self.cs), ('theta_min', self.p1), ('f_auto', self.p2),
+                       ('f_fol', self.p3), ('f_roo', self.p4), ('clspan', self.p5), 
+                       ('theta_woo', self.p6), ('theta_roo', self.p7), ('theta_lit', self.p8),
+                       ('theta_som', self.p9), ('Theta', self.p10), ('ceff', self.p11), 
+                       ('d_onset', self.p12), ('f_lab', self.p13), ('cronset', self.p14), 
+                       ('d_fall', self.p15), ('crfall', self.p16), ('clma', self.p17)])
+        self.pvals = np.array(self.paramdict.values())        
         
         #Constants for ACM model (currently using parameters from williams spreadsheet values)
         self.a2 = 0.0155 #0.0156935
@@ -76,7 +78,6 @@ class dalecData( ):
         self.t_max = self.data[:,2].tolist()*k
         self.t_min = self.data[:,3].tolist()*k
         self.t_range = np.array(self.t_max) - np.array(self.t_min)
-        self.t = 0.5*(np.exp(self.p10*np.array(self.t_mean))) #Temp term
         
         #'Driving Data'
         self.I = self.data[:,4].tolist()*k #incident radiation
