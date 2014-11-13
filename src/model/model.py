@@ -126,7 +126,7 @@ def lin_dalecv2(pvals, dC, x):
     dalecoutput = dalecv2(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8],
                           p[9], p[10], p[11], p[12], p[13], p[14], p[15], p[16],
                           p[17], p[18], p[19], p[20], p[21], p[22], dC, x)
-    lin_model = np.matrix(ad.jacobian(dalecoutput, p))
+    lin_model = ad.jacobian(dalecoutput, p)
     return dalecoutput, lin_model
     
     
@@ -153,7 +153,7 @@ def linmod_list(pvals, dC, start, fin):
         mod_list[(x+1)-start], matlist[x-start] =\
                                           lin_dalecv2(mod_list[x-start], dC, x)
     return matlist
-    
+
     
 def linmod_evolve(pvals, matlist, dC, start, fin):
     """evoles initial start (pvals) forward using given matrix list (matlist)
@@ -163,6 +163,29 @@ def linmod_evolve(pvals, matlist, dC, start, fin):
     linmod_list = np.concatenate((np.array([pvals]),\
                                   np.ones((fin - start, len(pvals)))*-9999.))
     for x in xrange(start, fin):
-        linmod_list[(x+1)-start] = np.array(matlist[x-start]*\
-                                   np.matrix(linmod_list[x-start]).T).T
+        linmod_list[(x+1)-start] = np.dot(matlist[x-start],linmod_list[x-start])
+    return linmod_list
+    
+    
+def mfac(matlist, timestep):
+    """matrix factorial function, takes a list of matrices and a time step,
+    returns the matrix factoral.
+    """
+    if timestep==-1.:
+        return np.eye(23)
+    mat = matlist[0]
+    for x in xrange(0,timestep):
+        mat = np.dot(matlist[x+1], mat)
+    return mat
+    
+    
+def linmod_evolvefac(pvals, matlist, dC, start, fin):
+    """evoles initial start (pvals) forward using given matrix list (matlist)
+    of linearized models, also takes a dataClass (dC) and a start and finish 
+    point.
+    """    
+    linmod_list = np.concatenate((np.array([pvals]),\
+                                  np.ones((fin - start, len(pvals)))*-9999.))
+    for x in xrange(start, fin):
+        linmod_list[(x+1)-start] = np.dot(mfac(matlist, x-start), pvals)
     return linmod_list

@@ -13,6 +13,7 @@ class dalecData( ):
         self.allLines = self.f.readlines()
         self.lenrun = lenrun
         self.startrun = startrun
+        self.timestep = np.arange(startrun, startrun+lenrun)
         self.data = np.array([[-9999.]*9 for i in range(self.lenrun)])
         n = -1
         for x in xrange(self.startrun, self.lenrun+self.startrun):
@@ -28,7 +29,8 @@ class dalecData( ):
         self.cw = 770.0
         self.cl = 40.0
         self.cs = 9897.0
-        self.clist = np.array([[self.clab,self.cf,self.cr,self.cw,self.cl,self.cs]])
+        self.clist = np.array([[self.clab,self.cf,self.cr,self.cw,self.cl,\
+                                self.cs]])
         
         #'Parameters for optimization'                     range
         self.p1 = 0.00000441 #theta_min, cl to cs decomp  (1e-2 - 1e-5)day^-1
@@ -41,7 +43,7 @@ class dalecData( ):
         self.p8 = 0.0228 #theta_lit, litter C turnover    (1e-4 - 1e-2)day^-1
         self.p9 = 0.0000026 #theta_som, SOM C turnover    (1e-7 - 1e-3)day^-1 
         self.p10 = 0.0693 #Theta, temp dependence exp fact(0.018 - 0.08)
-        self.p11 = 15. #ceff, canopy efficiency param      (10 - 100)        
+        self.p11 = 15. #ceff, canopy efficiency param     (10 - 100)        
         self.p12 = 40.4 #d_onset, clab release date       (1 - 365)
         self.p13 = 0.050629 #f_lab, frac GPP to clab      (0.01 - 0.5)
         self.p14 = 30. #cronset, clab release period      (10 - 100)
@@ -51,12 +53,15 @@ class dalecData( ):
   
         self.paramdict = col.OrderedDict([('clab', self.clab), ('cf', self.cf), 
                        ('cr', self.cr), ('cw', self.cw), ('cl', self.cl),
-                       ('cs', self.cs), ('theta_min', self.p1), ('f_auto', self.p2),
-                       ('f_fol', self.p3), ('f_roo', self.p4), ('clspan', self.p5), 
-                       ('theta_woo', self.p6), ('theta_roo', self.p7), ('theta_lit', self.p8),
-                       ('theta_som', self.p9), ('Theta', self.p10), ('ceff', self.p11), 
-                       ('d_onset', self.p12), ('f_lab', self.p13), ('cronset', self.p14), 
-                       ('d_fall', self.p15), ('crfall', self.p16), ('clma', self.p17)])
+                       ('cs', self.cs), ('theta_min', self.p1), 
+                       ('f_auto', self.p2), ('f_fol', self.p3), 
+                       ('f_roo', self.p4), ('clspan', self.p5), 
+                       ('theta_woo', self.p6), ('theta_roo', self.p7), 
+                       ('theta_lit', self.p8), ('theta_som', self.p9), 
+                       ('Theta', self.p10), ('ceff', self.p11), 
+                       ('d_onset', self.p12), ('f_lab', self.p13), 
+                       ('cronset', self.p14), ('d_fall', self.p15), 
+                       ('crfall', self.p16), ('clma', self.p17)])
         self.pvals = np.array(self.paramdict.values())        
         
         #Constants for ACM model (currently using parameters from williams spreadsheet values)
@@ -94,9 +99,7 @@ class dalecData( ):
         self.sigb_cr = 154.**2 #(self.cr*0.2)**2 #20%
         self.sigb_cl = 8.**2 #(self.cl*0.2)**2 #20%
         self.sigb_cs = 1979.4**2 #(self.cs*0.2)**2 #20% 
-        self.B = np.matrix([[self.sigb_cf,0,0,0,0],[0,self.sigb_cr,0,0,0], \
-                          [0,0,self.sigb_cw,0,0],[0,0,0,self.sigb_cl,0], \
-                          [0,0,0,0,self.sigb_cs]])
+        self.B = (0.2*np.array([self.pvals]))**2*np.eye(23)
         #MAKE NEW B, THIS IS WRONG!
         
         #'Observartion variances for carbon pools and NEE' 
@@ -113,7 +116,7 @@ class dalecData( ):
 
     def assimilation_obs(self, obs_str):
         possibleobs = ['gpp', 'lf', 'lw', 'rt', 'nee', 'cf', 'cl', \
-                       'cr', 'cw', 'cs']
+                       'cr', 'cw', 'cs', 'lai', 'clab']
         Obslist = re.findall(r'[^,;\s]+', obs_str)
     
         for ob in Obslist:

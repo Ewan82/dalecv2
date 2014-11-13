@@ -63,9 +63,9 @@ def test_lindalecv2(lam=1e-4):
     mx = m.dalecv2_input(pvalx, datx, 0)
     mat0 = m.lin_dalecv2(pvalx, datx, 0)[1]
     print abs(np.linalg.norm(mxdx-mx) / \
-             np.linalg.norm(mat0*lam*np.matrix(pvaldx).T) - 1)  
+             np.linalg.norm(np.dot(mat0, lam*pvaldx)) - 1)  
     assert abs(np.linalg.norm(mxdx-mx) / \
-             np.linalg.norm(mat0*lam*np.matrix(pvaldx).T) - 1) < 1e-10
+             np.linalg.norm(np.dot(mat0, lam*pvaldx)) - 1) < 1e-10
              
              
 def test_linmodev(lam=1e-4):
@@ -81,7 +81,24 @@ def test_linmodev(lam=1e-4):
     linmodev = m.linmod_evolve(lam*pvaldx, matlist, datx, 0, 10)
     print abs(np.linalg.norm(mxdx[10]-mx[10]) / \
              np.linalg.norm(linmodev[10]) - 1)  
-    return abs(np.linalg.norm(mxdx[10]-mx[10]) / \
-             np.linalg.norm(linmodev[10]) - 1) < 1e-9   
+    assert abs(np.linalg.norm(mxdx[10]-mx[10]) / \
+             np.linalg.norm(linmodev[10]) - 1) < 1e-9
+             
+             
+def test_linmodevfac(lam=1e-4):
+    """Test for linmod_list and linmod_evolvefac fns.
+    """
+    datx = dC.dalecData(10)
+    datdx = dC.dalecData(10)
+    pvalx = datx.pvals
+    pvaldx = datdx.pvals*0.1   
+    mxdx = m.mod_list(pvalx+lam*pvaldx, datx, 0, 10)
+    mx = m.mod_list(pvalx, datx, 0, 10)
+    matlist = m.linmod_list(pvalx, datx, 0, 10)
+    linmodev = m.linmod_evolvefac(lam*pvaldx, matlist, datx, 0, 10)
+    print abs(np.linalg.norm(mxdx[10]-mx[10]) / \
+             np.linalg.norm(linmodev[10]) - 1)  
+    assert abs(np.linalg.norm(mxdx[10]-mx[10]) / \
+             np.linalg.norm(linmodev[10]) - 1) < 1e-9
 
     

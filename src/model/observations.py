@@ -1,28 +1,29 @@
 """Possible carbon balance observations shown as functions of the DALEC
 variables and parameters to be used in data assimilation scheme.
 """
+import ad
 import model as m
 
 
 def gpp(pvals, dC, x):
     """Fn calculates gross primary production (gpp).
     """
-    gpp = m.acm(pvals[1], pvals[16], dC, x)
+    gpp = m.acm(pvals[1], pvals[22], pvals[16], dC, x)
     return gpp
 
 
 def rec(pvals, dC, x):
-    """Function calculates total ecosystem respiration (REC).
+    """Function calculates total ecosystem respiration (rec).
     """
-    rec = pvals[7]*m.acm(pvals[1], pvals[16], dC, x) + (pvals[13]*pvals[4] +\
-          pvals[14]*pvals[5])*m.temp_term(pvals[15], dC, x)
+    rec = pvals[7]*m.acm(pvals[1], pvals[22], pvals[16], dC, x) + (pvals[13]*\
+          pvals[4] +pvals[14]*pvals[5])*m.temp_term(pvals[15], dC, x)
     return rec
     
 
 def nee(pvals, dC, x):
-    """Function calculates Net Ecosystem Exchange (NEE).
+    """Function calculates Net Ecosystem Exchange (nee).
     """
-    nee = rec(pvals, dC, x) - m.acm(pvals[1], pvals[16], dC, x)
+    nee = rec(pvals, dC, x) - m.acm(pvals[1], pvals[22], pvals[16], dC, x)
     return nee
     
     
@@ -87,3 +88,12 @@ def cs(pvals, dC, x):
     """
     cs = pvals[5]
     return cs
+    
+    
+def linob(ob, pvals, dC, x):
+    modobdict = {'gpp': gpp, 'nee': nee, 'rt': rec, 'cf': cf, 'clab': clab, 
+                 'cr': cr, 'cw': cw, 'cl': cl, 'cs': cs, 'lf': lf, 'lw': lw, 
+                 'lai':lai}
+    dpvals = ad.adnumber(pvals)
+    output = modobdict[ob](dpvals, dC, x)
+    return ad.jacobian(output, dpvals)
