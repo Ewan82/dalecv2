@@ -1,3 +1,6 @@
+"""dataClass extracting driving data required to run dalecv2 model forwards.
+As a class function will also extract observations used in assimilation.
+"""
 import numpy as np
 import os
 import re

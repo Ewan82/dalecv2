@@ -1,3 +1,5 @@
+"""4DVAR scheme for dalecv2.
+"""
 import numpy as np
 import scipy.optimize as spop
 import model as m
