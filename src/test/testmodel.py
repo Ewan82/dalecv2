@@ -5,7 +5,6 @@ from model import model as m
 from model import data as dC
 
 
-
 def test_acm():
     """Test for acm fn in model module.
     """
@@ -101,4 +100,3 @@ def test_linmodevfac(lam=1e-4):
     assert abs(np.linalg.norm(mxdx[10]-mx[10]) / \
              np.linalg.norm(linmodev[10]) - 1) < 1e-9
 
-    

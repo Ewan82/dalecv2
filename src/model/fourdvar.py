@@ -5,6 +5,10 @@ import observations as obs
 
 
 def obscost(obdict, oberrdict):
+    """Function returning list of observations and a list of their 
+    corresponding error values. Takes observation dictionary and an observation
+    error dictionary.
+    """
     yoblist = np.array([])
     yerrlist = np.array([])
     for x in xrange(len(obdict.values()[0])):
@@ -16,6 +20,10 @@ def obscost(obdict, oberrdict):
               
                 
 def hxcost(pvallist, obdict, dC):
+    """Function returning a list of observation values as predicted by the 
+    DALEC model. Takes a list of model values (pvallist), an observation 
+    dictionary and a dataClass (dC).
+    """
     modobdict = {'gpp': obs.gpp, 'nee': obs.nee, 'rt': obs.rec, 'cf': obs.cf,
                  'clab': obs.clab, 'cr': obs.cr, 'cw': obs.cw, 'cl': obs.cl,
                  'cs': obs.cs, 'lf': obs.lf, 'lw': obs.lw, 'lai':obs.lai}
@@ -29,11 +37,19 @@ def hxcost(pvallist, obdict, dC):
               
               
 def rmat(yerr):
+    """Returns observation error covariance matrix given a list of observation
+    error values
+    """
     r = yerr*np.eye(len(yerr))
     return r
     
     
 def hmat(pvallist, obdict, matlist, dC):
+    """Returns a list of observation values as predicted by DALEC (hx) and a 
+    linearzied observation error covariance matrix (hmat). Takes a list of 
+    model values (pvallist), a observation dictionary, a list of linearized 
+    models (matlist) and a dataClass (dC).
+    """
     modobdict = {'gpp': obs.gpp, 'nee': obs.nee, 'rt': obs.rec, 'cf': obs.cf,
                  'clab': obs.clab, 'cr': obs.cr, 'cw': obs.cw, 'cl': obs.cl,
                  'cs': obs.cs, 'lf': obs.lf, 'lw': obs.lw, 'lai': obs.lai}
@@ -56,29 +72,43 @@ def hmat(pvallist, obdict, matlist, dC):
     
     
 def cost(pvals, obdict, oberrdict, dC, start, fin):
+    """4DVAR cost function to be minimized. Takes an initial state (pvals), an
+    observation dictionary, observation error dictionary, a dataClass and a
+    start and finish time step.
+    """
     pvallist = m.mod_list(pvals, dC, start, fin)
     yoblist, yerrlist = obscost(obdict, oberrdict)
     rmatrix = rmat(yerrlist)
     hx = hxcost(pvallist, obdict, dC)
-    obcost = np.dot(np.dot((yoblist-hx),rmatrix),(yoblist-hx).T)
-    modcost =  np.dot(np.dot((pvals-dC.pvals),dC.B),(pvals-dC.pvals).T)
-    cost = 0.5*modcost + 0.5*obcost
+    obcost = np.dot(np.dot((yoblist-hx),np.linalg.inv(rmatrix)),(yoblist-hx).T)
+    #modcost =  np.dot(np.dot((pvals-dC.pvals),np.linalg.inv(dC.B)),\
+    #                  (pvals-dC.pvals).T)
+    cost = 0.5*obcost #+ 0.5*modcost
     return cost
 
 
 def gradcost(pvals, obdict, oberrdict, dC, start, fin):
+    """Gradient of 4DVAR cost fn to be passed to optimization routine. Takes an
+    initial state (pvals), an obs dictionary, an obs error dictionary, a 
+    dataClass and a start and finish time step.
+    """
     pvallist = m.mod_list(pvals, dC, start, fin)
     matlist = m.linmod_list(pvals, dC, start, fin)
     yoblist, yerrlist = obscost(obdict, oberrdict)
     rmatrix = rmat(yerrlist)
     hx, hmatrix = hmat(pvallist, obdict, matlist, dC)
-    obcost = np.dot(np.dot(hmatrix.T,np.linalg.inv(rmatrix)),(yoblist-hx).T)
-    modcost =  np.dot(np.linalg.inv(dC.B),(pvals-dC.pvals).T)
-    gradcost = modcost - obcost
+    obcost = np.dot(hmatrix.T, np.dot(np.linalg.inv(rmatrix), (yoblist-hx).T))
+    #modcost =  np.dot(np.linalg.inv(dC.B),(pvals-dC.pvals).T)
+    gradcost =  - obcost #+ modcost
     return gradcost
+    #WRITE A TEST FOR THIS SHIZ, IT CLEARLY DOESNT WORK!
     
     
 def findmin(pvals, obdict, oberrdict, dC, start, fin):
+    """Function which minimizes 4DVAR cost fn. Takes an initial state (pvals),
+    an obs dictionary, an obs error dictionary, a dataClass and a start and 
+    finish time step.
+    """
     findmin = spop.minimize(cost, pvals, args=(obdict, oberrdict, dC, start,\
               fin,), method='L-BFGS-B', jac=gradcost, bounds=((0,None),(0,None),\
               (0,None),(0,None),(0,None),(0,None),(0,None),(0,None),(0,None),\
