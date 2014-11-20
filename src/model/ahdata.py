@@ -43,10 +43,10 @@ class dalecData( ):
         self.p9 = 0.0000026 #theta_som, SOM C turnover    (1e-7 - 1e-3)day^-1 
         self.p10 = 0.0693 #Theta, temp dependence exp fact(0.018 - 0.08)
         self.p11 = 15. #ceff, canopy efficiency param     (10 - 100)        
-        self.p12 = 40.4 #d_onset, clab release date       (1 - 365)
+        self.p12 = 130. #d_onset, clab release date       (1 - 365)
         self.p13 = 0.050629 #f_lab, frac GPP to clab      (0.01 - 0.5)
         self.p14 = 30. #cronset, clab release period      (10 - 100)
-        self.p15 = 197. #d_fall, date of leaf fall        (1 - 365)
+        self.p15 = 300. #d_fall, date of leaf fall        (1 - 365)
         self.p16 = 120. #crfall, leaf fall period         (10 - 100)
         self.p17 = 52. #clma, leaf mass per area          (10 - 400)gCm^-2
   
@@ -76,7 +76,7 @@ class dalecData( ):
         self.a10 = 0.9576 #0.789798
         self.phi_d = -2. #max. soil leaf water potential difference
         self.R_tot = 1. #total plant-soil hydrolic resistance
-        self.lat = 0.908 #latitutde of forest site in radians
+        self.lat = 0.89133965 #latitutde of forest site in radians
         
         #'Daily temperatures degC'
         self.t_mean = self.fluxdata['t_mean']

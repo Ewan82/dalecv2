@@ -94,8 +94,7 @@ def gradcost(pvals, obdict, oberrdict, dC, start, fin):
     initial state (pvals), an obs dictionary, an obs error dictionary, a 
     dataClass and a start and finish time step.
     """
-    pvallist = m.mod_list(pvals, dC, start, fin)
-    matlist = m.linmod_list(pvals, dC, start, fin)
+    pvallist, matlist = m.linmod_list(pvals, dC, start, fin)
     yoblist, yerrlist = obscost(obdict, oberrdict)
     rmatrix = rmat(yerrlist)
     hx, hmatrix = hmat(pvallist, obdict, matlist, dC)

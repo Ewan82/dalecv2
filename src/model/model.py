@@ -152,7 +152,7 @@ def linmod_list(pvals, dC, start, fin):
     for x in xrange(start, fin):
         mod_list[(x+1)-start], matlist[x-start] =\
                                           lin_dalecv2(mod_list[x-start], dC, x)
-    return matlist
+    return mod_list, matlist
 
     
 def linmod_evolve(pvals, matlist, dC, start, fin):

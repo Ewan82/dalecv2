@@ -76,7 +76,7 @@ def test_linmodev(lam=1e-4):
     pvaldx = datdx.pvals*0.1   
     mxdx = m.mod_list(pvalx+lam*pvaldx, datx, 0, 10)
     mx = m.mod_list(pvalx, datx, 0, 10)
-    matlist = m.linmod_list(pvalx, datx, 0, 10)
+    matlist = m.linmod_list(pvalx, datx, 0, 10)[1]
     linmodev = m.linmod_evolve(lam*pvaldx, matlist, datx, 0, 10)
     print abs(np.linalg.norm(mxdx[10]-mx[10]) / \
              np.linalg.norm(linmodev[10]) - 1)  
@@ -93,7 +93,7 @@ def test_linmodevfac(lam=1e-4):
     pvaldx = datdx.pvals*0.1   
     mxdx = m.mod_list(pvalx+lam*pvaldx, datx, 0, 10)
     mx = m.mod_list(pvalx, datx, 0, 10)
-    matlist = m.linmod_list(pvalx, datx, 0, 10)
+    matlist = m.linmod_list(pvalx, datx, 0, 10)[1]
     linmodev = m.linmod_evolvefac(lam*pvaldx, matlist, datx, 0, 10)
     print abs(np.linalg.norm(mxdx[10]-mx[10]) / \
              np.linalg.norm(linmodev[10]) - 1)  
