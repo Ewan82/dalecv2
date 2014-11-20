@@ -104,14 +104,22 @@ def gradcost(pvals, obdict, oberrdict, dC, start, fin):
     return gradcost
     
     
-def findmin(pvals, obdict, oberrdict, dC, start, fin, meth='L-BFGS-B'):
+def findmin(pvals, obdict, oberrdict, dC, start, fin, meth='L-BFGS-B',\
+            bnds='+ve', fprime=gradcost):
     """Function which minimizes 4DVAR cost fn. Takes an initial state (pvals),
     an obs dictionary, an obs error dictionary, a dataClass and a start and 
     finish time step.
     """
-    findmin = spop.minimize(cost, pvals, args=(obdict, oberrdict, dC, start,\
-              fin,), method=meth, jac=gradcost, bounds=((0,None),(0,None),\
+    if bnds == 'strict':
+        bnds=((10,1000),(10,1000),(10,1000),(100,1e5),(10,1000),(100,2e5),\
+              (1e-5,1e-2),(0.3,0.7),(0.01,0.5),(0.01,0.5),(1.1,10.),\
+              (2.5e-5,1e-3),(1e-4,1e-2),(1e-4,1e-2),(1e-7,1e-3),(0.018,0.08),\
+              (10,100),(1,365),(0.01,0.5),(10,100),(1,365),(10,100),(10,400))
+    else:
+        bnds=((0,None),(0,None),(0,None),(0,None),(0,None),(0,None),(0,None),\
+              (0,None),(0,None),(0,None),(1.1,None),(0,None),(0,None),(0,None),\
               (0,None),(0,None),(0,None),(0,None),(0,None),(0,None),(0,None),\
-              (0,None),(0.5,None),(0,None),(0,None),(0,None),(0,None),(0,None),\
-              (0,None),(0,None),(0,None),(0,None),(0,None),(0,None),(0,None)))
+              (0,None),(0,None))
+    findmin = spop.minimize(cost, pvals, args=(obdict, oberrdict, dC, start,\
+              fin,), method=meth, jac=fprime, bounds=bnds)
     return findmin

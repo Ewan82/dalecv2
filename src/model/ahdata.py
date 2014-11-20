@@ -32,17 +32,17 @@ class dalecData( ):
                                 self.cs]])
         
         #'Parameters for optimization'                     range
-        self.p1 = 0.00000441 #theta_min, cl to cs decomp  (1e-2 - 1e-5)day^-1
+        self.p1 = 0.000441 #theta_min, cl to cs decomp  (1e-2 - 1e-5)day^-1
         self.p2 = 0.47 #f_auto, fraction of GPP respired  (0.3 - 0.7)
         self.p3 = 0.28 #f_fol, frac GPP to foliage        (0.01 - 0.5)
         self.p4 = 0.16 #f_roo, frac GPP to fine roots     (0.01 - 0.5)
-        self.p5 = 1.5 #clspan, leaf lifespan              (? - ?)
-        self.p6 = 0.00000206 #theta_woo, wood C turnover  (2.5e-5 - 1e-3)day^-1
-        self.p7 = 0.00248 #theta_roo, root C turnover rate(1e-4 - 1e-2)day^-1
-        self.p8 = 0.0228 #theta_lit, litter C turnover    (1e-4 - 1e-2)day^-1
+        self.p5 = 3. #clspan, leaf lifespan              (? - ?)
+        self.p6 = 0.00026 #theta_woo, wood C turnover     (2.5e-5 - 1e-3)day^-1
+        self.p7 = 0.000248 #theta_roo, root C turnover rate(1e-4 - 1e-2)day^-1
+        self.p8 = 0.00228 #theta_lit, litter C turnover    (1e-4 - 1e-2)day^-1
         self.p9 = 0.0000026 #theta_som, SOM C turnover    (1e-7 - 1e-3)day^-1 
-        self.p10 = 0.0693 #Theta, temp dependence exp fact(0.018 - 0.08)
-        self.p11 = 15. #ceff, canopy efficiency param     (10 - 100)        
+        self.p10 = 0.0793 #Theta, temp dependence exp fact(0.018 - 0.08)
+        self.p11 = 20. #ceff, canopy efficiency param     (10 - 100)        
         self.p12 = 130. #d_onset, clab release date       (1 - 365)
         self.p13 = 0.050629 #f_lab, frac GPP to clab      (0.01 - 0.5)
         self.p14 = 30. #cronset, clab release period      (10 - 100)
