@@ -15,7 +15,7 @@ def obscost(obdict, oberrdict):
     yerrlist = np.array([])
     for x in xrange(len(obdict.values()[0])):
         for ob in obdict.iterkeys():
-            if obdict[ob][x]!=-9999.:
+            if np.isnan(obdict[ob][x])!=True:
                 yoblist = np.append(yoblist, obdict[ob][x])
                 yerrlist = np.append(yerrlist, oberrdict[ob+'_err'][x])
     return yoblist, yerrlist
@@ -32,7 +32,7 @@ def hxcost(pvallist, obdict, dC):
     hx = np.array([])
     for x in xrange(len(obdict.values()[0])):
         for ob in obdict.iterkeys():
-            if obdict[ob][x]!=-9999.:
+            if np.isnan(obdict[ob][x])!=True:
                 hx = np.append(hx, modobdict[ob](pvallist[x], dC,\
                                dC.timestep[x]))
     return hx
@@ -60,7 +60,7 @@ def hmat(pvallist, obdict, matlist, dC):
     for x in xrange(len(obdict.values()[0])):
         temp = []
         for ob in obdict.iterkeys():
-            if obdict[ob][x] != -9999.:
+            if np.isnan(obdict[ob][x])!=True:
                 hx = np.append(hx, modobdict[ob](pvallist[x], dC,\
                                dC.timestep[x]))
                 temp.append([obs.linob(ob, pvallist[x], dC, dC.timestep[x])])
@@ -103,16 +103,15 @@ def gradcost(pvals, obdict, oberrdict, dC, start, fin):
     #modcost =  np.dot(np.linalg.inv(dC.B),(pvals-dC.pvals).T)
     gradcost =  - obcost #+ modcost
     return gradcost
-    #WRITE A TEST FOR THIS SHIZ, IT CLEARLY DOESNT WORK!
     
     
-def findmin(pvals, obdict, oberrdict, dC, start, fin):
+def findmin(pvals, obdict, oberrdict, dC, start, fin, meth='L-BFGS-B'):
     """Function which minimizes 4DVAR cost fn. Takes an initial state (pvals),
     an obs dictionary, an obs error dictionary, a dataClass and a start and 
     finish time step.
     """
     findmin = spop.minimize(cost, pvals, args=(obdict, oberrdict, dC, start,\
-              fin,), method='L-BFGS-B', jac=gradcost, bounds=((0,None),(0,None),\
+              fin,), method=meth, jac=gradcost, bounds=((0,None),(0,None),\
               (0,None),(0,None),(0,None),(0,None),(0,None),(0,None),(0,None),\
               (0,None),(0.5,None),(0,None),(0,None),(0,None),(0,None),(0,None),\
               (0,None),(0,None),(0,None),(0,None),(0,None),(0,None),(0,None)))

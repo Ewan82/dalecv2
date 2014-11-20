@@ -2,7 +2,7 @@
 """
 import numpy as np
 from model import model as m
-from model import data as dC
+from model import ahdata as dC
 
 
 def test_acm():

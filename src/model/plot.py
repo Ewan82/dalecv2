@@ -62,10 +62,6 @@ def plot4dvarrun(ob, xb, xa, dC, start, fin):
     plotobs(ob, xb, dC, start, fin, ob+'_b')
     plotobs(ob, xa, dC, start, fin, ob+'_a')
     obdict, oberrdict = dC.assimilation_obs(ob)
-    for x in xrange(len(obdict[ob])):
-        if obdict[ob][x]==-9999.:
-            obdict[ob][x]=None
-            oberrdict[ob+'_err'][x]=None
     plt.errorbar(xlist, obdict[ob], yerr=oberrdict[ob+'_err'], fmt='o',\
                  label=ob+'_o')
     plt.legend()

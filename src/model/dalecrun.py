@@ -4,7 +4,7 @@ each array at each time step are the 6 carbon pools (clab, cf, cr, cw, cl, cs)
 which the dalecv2 model predicts, the next 17 elements are the model parameters
 which stay constant at every time step. Uses model.py and data.py (data.py is a
 data class extracting data from the files in the data dir). requires, numpy,
-ad, ad.math, os and re python packages (these are all available on the Jasmin 
+ad, ad.admath, os and re python packages (these are all available on the Jasmin 
 server after using "setup epd" command). MUST BE UNPACKED IN HOME DIRECTORY TO
 WORK :).
 """

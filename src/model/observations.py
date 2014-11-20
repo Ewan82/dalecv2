@@ -91,6 +91,10 @@ def cs(pvals, dC, x):
     
     
 def linob(ob, pvals, dC, x):
+    """Function returning jacobian of observation with respect to the parameter
+    list. Takes an obs string, a parameters list, a dataClass and a time step
+    x.
+    """
     modobdict = {'gpp': gpp, 'nee': nee, 'rt': rec, 'cf': cf, 'clab': clab, 
                  'cr': cr, 'cw': cw, 'cl': cl, 'cs': cs, 'lf': lf, 'lw': lw, 
                  'lai':lai}
