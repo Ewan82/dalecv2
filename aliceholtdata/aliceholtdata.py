@@ -6,8 +6,8 @@ def data(filename):
     """Extracts data from specified .csv file.
     """
     fluxdata = mlab.csv2rec(filename, missing = 'N/A')
-    fluxdata['nee'][fluxdata['nee']>=100]=float('NaN')
-    fluxdata['nee'][fluxdata['nee']<=-100]=float('NaN')
+    fluxdata['nee'][fluxdata['nee']>=50]=float('NaN')
+    fluxdata['nee'][fluxdata['nee']<=-50]=float('NaN')
    
     lenyear = len(fluxdata)/48
     
@@ -33,7 +33,7 @@ def data(filename):
                 qcflag = qcflag + 1
         if fill > 0:
             nee[x] = float('NaN')
-        elif qcflag > 4:
+        elif qcflag > 1:
             nee[x] = float('NaN')
         else:
             nee[x] = 12*1e-6*30*60*np.sum(fluxdata['nee'][48*x:48*x+48])

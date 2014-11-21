@@ -115,7 +115,7 @@ class dalecData( ):
         self.sigo_cr = (self.cr*0.3)**2 #30%
         self.sigo_cl = (self.cl*0.3)**2 #30%
         self.sigo_cs = (self.cs*0.3)**2 #30% 
-        self.sigo_nee = 0.5**2 #(gCm-2day-1)**2
+        self.sigo_nee = 0.5 #(gCm-2day-1)**2
         self.sigo_lf = 0.2**2
         self.sigo_lw = 0.2**2
         

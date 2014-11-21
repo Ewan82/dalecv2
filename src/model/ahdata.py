@@ -15,7 +15,8 @@ class dalecData( ):
         #Extract the data
         self.homepath = os.path.expanduser("~")
         self.data = ml.csv2rec(self.homepath+\
-                              "/dalecv2/aliceholtdata/ahdata.csv",missing='nan')
+                              "/dalecv2/aliceholtdata/ahdata2.csv",\
+                              missing='nan')
         self.lenrun = lenrun
         self.startrun = startrun
         self.fluxdata = self.data[startrun:startrun+lenrun]
@@ -36,7 +37,7 @@ class dalecData( ):
         self.p2 = 0.47 #f_auto, fraction of GPP respired  (0.3 - 0.7)
         self.p3 = 0.28 #f_fol, frac GPP to foliage        (0.01 - 0.5)
         self.p4 = 0.16 #f_roo, frac GPP to fine roots     (0.01 - 0.5)
-        self.p5 = 3. #clspan, leaf lifespan              (? - ?)
+        self.p5 = 1.8 #clspan, leaf lifespan              (? - ?)
         self.p6 = 0.00026 #theta_woo, wood C turnover     (2.5e-5 - 1e-3)day^-1
         self.p7 = 0.000248 #theta_roo, root C turnover rate(1e-4 - 1e-2)day^-1
         self.p8 = 0.00228 #theta_lit, litter C turnover    (1e-4 - 1e-2)day^-1
@@ -109,7 +110,7 @@ class dalecData( ):
         self.sigo_cr = (self.cr*0.3)**2 #30%
         self.sigo_cl = (self.cl*0.3)**2 #30%
         self.sigo_cs = (self.cs*0.3)**2 #30% 
-        self.sigo_nee = 0.5**2 #(gCm-2day-1)**2
+        self.sigo_nee = 0.5 #(gCm-2day-1)**2
         self.sigo_lf = 0.2**2
         self.sigo_lw = 0.2**2
         

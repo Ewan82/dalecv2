@@ -1,6 +1,7 @@
 """Possible carbon balance observations shown as functions of the DALEC
 variables and parameters to be used in data assimilation scheme.
 """
+import numpy as np
 import ad
 import model as m
 
@@ -23,7 +24,9 @@ def rec(pvals, dC, x):
 def nee(pvals, dC, x):
     """Function calculates Net Ecosystem Exchange (nee).
     """
-    nee = rec(pvals, dC, x) - m.acm(pvals[1], pvals[22], pvals[16], dC, x)
+    nee = (1.-pvals[7])*m.acm(pvals[1], pvals[22], pvals[16], dC, x) - \
+          (pvals[13]*pvals[4] + pvals[14]*pvals[5])* \
+          m.temp_term(pvals[15], dC, x)
     return nee
     
     
@@ -100,4 +103,4 @@ def linob(ob, pvals, dC, x):
                  'lai':lai}
     dpvals = ad.adnumber(pvals)
     output = modobdict[ob](dpvals, dC, x)
-    return ad.jacobian(output, dpvals)
+    return np.array(ad.jacobian(output, dpvals))

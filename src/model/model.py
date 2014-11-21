@@ -20,7 +20,7 @@ def temp_term(Theta, dC, x):
     """Calculates the temperature exponent factor for carbon pool respirations
     given a value for Theta parameter, a dataClass (dC) and a time step x.
     """
-    temp_term = 0.5*adm.exp(Theta*dC.t_mean[x])
+    temp_term = adm.exp(Theta*dC.t_mean[x])
     return temp_term
     
 
@@ -176,6 +176,19 @@ def mfac(matlist, timestep):
     mat = matlist[0]
     for x in xrange(0,timestep):
         mat = np.dot(matlist[x+1], mat)
+    return mat
+    
+    
+
+def mfacadj(matlist, timestep):
+    """matrix factoral fn for adjoint, takes a list of matrices and a timestep.
+    """
+    if timestep == -1:
+        return np.eye(23)
+    else:
+        mat=matlist[0].T
+        for x in xrange(0,timestep):
+            mat=np.dot(mat, matlist[x+1].T)
     return mat
     
     
