@@ -1,4 +1,4 @@
-"""4DVAR scheme for dalecv2.
+"""4DVARsum scheme for dalecv2.
 """
 import numpy as np
 import scipy.optimize as spop
@@ -41,7 +41,7 @@ def hxcostsum(pvallist, obdict, dC):
         temp = []
         for ob in obdict.iterkeys():
             if np.isnan(obdict[ob][x])!=True:
-                temp.append(modobdict[ob](pvallist[x], dC,dC.timestep[x]))
+                temp.append(modobdict[ob](pvallist[x], dC, x))
         if len(temp)!=0:
             hx.append(temp)
         else:
@@ -75,8 +75,8 @@ def hmatlist(pvallist, obdict, matlist, dC):
         temphmat = []
         for ob in obdict.iterkeys():
             if np.isnan(obdict[ob][x])!=True:
-                temp.append(modobdict[ob](pvallist[x], dC,dC.timestep[x]))
-                temphmat.append(obs.linob(ob, pvallist[x], dC, dC.timestep[x]))
+                temp.append(modobdict[ob](pvallist[x], dC,x))
+                temphmat.append(obs.linob(ob, pvallist[x], dC, x))
         if len(temp)!=0:
             hx.append(temp)
         if len(temphmat) != 0.:
@@ -150,7 +150,7 @@ def findminsum(pvals, obdict, oberrdict, dC, start, fin, meth='L-BFGS-B',\
     
     
 def findminglob(pvals, obdict, oberrdict, dC, start, fin, it=100,\
-                bnds='strict', stpsize=0.5, temp=1.):
+                bnds='strict', stpsize=0.5, temp=1., jc=None):
     """Function which minimizes 4DVAR cost fn. Takes an initial state (pvals),
     an obs dictionary, an obs error dictionary, a dataClass and a start and 
     finish time step.
@@ -164,5 +164,5 @@ def findminglob(pvals, obdict, oberrdict, dC, start, fin, it=100,\
         bnds = bnds
     findmin = spop.basinhopping(costsum, pvals, niter=it, minimizer_kwargs={\
               'method': 'L-BFGS-B', 'args':(obdict, oberrdict, dC, start,fin),\
-              'bounds':bnds}, stepsize=stpsize, T=temp)
+              'bounds':bnds, 'jac':jc}, stepsize=stpsize, T=temp)
     return findmin

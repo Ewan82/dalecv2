@@ -1,7 +1,7 @@
 """Tests for the functions in the fourdvar module.
 """
 import numpy as np
-from model import ahdata as dC
+from model import oregondata as dC
 from model import fourdvar as var
 from model import fourdvarsum as varsm
 import matplotlib.pyplot as plt
@@ -36,7 +36,7 @@ def test_costsumfn(alph=1e-8):
 def test_cost(alph=1e-8):
     """Test for cost and gradcost functions.
     """
-    d = dC.dalecData(10)
+    d = dC.dalecData(10,147)
     obdict, oberrdict = d.assimilation_obs('nee')
     gradj = var.gradcost(d.pvals, obdict, oberrdict, d, 0, 10)
     h = gradj*(np.linalg.norm(gradj))**(-1)
@@ -49,7 +49,7 @@ def test_costsum(alph=1e-8):
     """Test for cost and gradcost functions.
     """
     d = dC.dalecData(10)
-    obdict, oberrdict = d.assimilation_obs('nee')
+    obdict, oberrdict = d.assimilation_obs('gpp')
     gradj = varsm.gradcostsum(d.pvals, obdict, oberrdict, d, 0, 10)
     h = gradj*(np.linalg.norm(gradj))**(-1)
     j = varsm.costsum(d.pvals, obdict, oberrdict, d, 0, 10)

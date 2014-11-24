@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import model as m
 import observations as obs
+import copy as cp
  
     
 def plotgpp(cf, dC, start, fin):
@@ -66,3 +67,23 @@ def plot4dvarrun(ob, xb, xa, dC, start, fin):
                  label=ob+'_o')
     plt.legend()
     plt.show()
+    
+    
+def plotlinmoderr(cpool, dC, start, fin):
+    pooldict={'clab':0, 'cf':1, 'cr':2, 'cw':3, 'cl':4, 'cs':5}
+    cx, matlist = m.linmod_list(dC.pvals, dC, start, fin)
+    dC2 = cp.copy(dC)
+    dC2.pvals = dC2.pvals*1.05
+    cxdx = m.mod_list(dC2.pvals, dC2, start, fin)
+    dC3 = cp.copy(dC)
+    dC3.pvals = dC3.pvals*0.05
+    
+    dxl = m.linmod_evolvefac(dC3.pvals, matlist, dC, start, fin)
+    
+    dxn = cxdx-cx
+    
+    plt.plot(dxn[:,pooldict[cpool]],label='dxn '+cpool)
+    plt.plot(dxl[:,pooldict[cpool]],label='dxl '+cpool)
+    plt.legend()
+    plt.show()
+    

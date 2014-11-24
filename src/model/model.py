@@ -177,8 +177,7 @@ def mfac(matlist, timestep):
     for x in xrange(0,timestep):
         mat = np.dot(matlist[x+1], mat)
     return mat
-    
-    
+      
 
 def mfacadj(matlist, timestep):
     """matrix factoral fn for adjoint, takes a list of matrices and a timestep.

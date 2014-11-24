@@ -33,8 +33,7 @@ def hxcost(pvallist, obdict, dC):
     for x in xrange(len(obdict.values()[0])):
         for ob in obdict.iterkeys():
             if np.isnan(obdict[ob][x])!=True:
-                hx = np.append(hx, modobdict[ob](pvallist[x], dC,\
-                               dC.timestep[x]))
+                hx = np.append(hx, modobdict[ob](pvallist[x], dC,x))
     return hx
              
               
@@ -61,9 +60,8 @@ def hmat(pvallist, obdict, matlist, dC):
         temp = []
         for ob in obdict.iterkeys():
             if np.isnan(obdict[ob][x])!=True:
-                hx = np.append(hx, modobdict[ob](pvallist[x], dC,\
-                               dC.timestep[x]))
-                temp.append([obs.linob(ob, pvallist[x], dC, dC.timestep[x])])
+                hx = np.append(hx, modobdict[ob](pvallist[x], dC,x))
+                temp.append([obs.linob(ob, pvallist[x], dC, x)])
         if len(temp) != 0.:
             hmat = np.append(hmat, np.dot(np.vstack(temp),\
                              m.mfac(matlist, x-1)))
