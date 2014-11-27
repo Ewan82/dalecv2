@@ -7,10 +7,10 @@ from model import fourdvarsum as varsm
 import matplotlib.pyplot as plt
 
 
-def test_costfn(alph=1e-8):
+def test_costfn(alph=1e-9):
     """Test for cost and gradcost functions.
     """
-    d = dC.dalecData(10)
+    d = dC.dalecData(10,147)
     obdict, oberrdict = d.assimilation_obs('nee')
     gradj = var.gradcost(d.pvals, obdict, oberrdict, d, 0, 10)
     h = gradj*(np.linalg.norm(gradj))**(-1)
@@ -20,10 +20,10 @@ def test_costfn(alph=1e-8):
     assert (jalph-j) / (np.dot(alph*h, gradj)) < 1.0001
 
 
-def test_costsumfn(alph=1e-8):
+def test_costsumfn(alph=1e-9):
     """Test for cost and gradcost functions.
     """
-    d = dC.dalecData(10)
+    d = dC.dalecData(10,147)
     obdict, oberrdict = d.assimilation_obs('nee')
     gradj = varsm.gradcostsum(d.pvals, obdict, oberrdict, d, 0, 10)
     h = gradj*(np.linalg.norm(gradj))**(-1)
@@ -48,8 +48,8 @@ def test_cost(alph=1e-8):
 def test_costsum(alph=1e-8):
     """Test for cost and gradcost functions.
     """
-    d = dC.dalecData(10)
-    obdict, oberrdict = d.assimilation_obs('gpp')
+    d = dC.dalecData(10,147)
+    obdict, oberrdict = d.assimilation_obs('nee')
     gradj = varsm.gradcostsum(d.pvals, obdict, oberrdict, d, 0, 10)
     h = gradj*(np.linalg.norm(gradj))**(-1)
     j = varsm.costsum(d.pvals, obdict, oberrdict, d, 0, 10)

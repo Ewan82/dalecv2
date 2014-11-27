@@ -64,7 +64,7 @@ def test_lindalecv2(lam=1e-4):
     print abs(np.linalg.norm(mxdx-mx) / \
              np.linalg.norm(np.dot(mat0, lam*pvaldx)) - 1)  
     assert abs(np.linalg.norm(mxdx-mx) / \
-             np.linalg.norm(np.dot(mat0, lam*pvaldx)) - 1) < 1e-9
+             np.linalg.norm(np.dot(mat0, lam*pvaldx)) - 1) < 1e-8
              
              
 def test_linmodev(lam=1e-4):

@@ -23,11 +23,11 @@ class dalecData( ):
         self.timestep = np.arange(startrun, startrun+lenrun)
         
         #'I.C. for carbon pools gCm-2'
-        self.clab = 41.8
-        self.cf = 58.0
+        self.clab = 61.8
+        self.cf = 10.0
         self.cr = 102.0
         self.cw = 770.0
-        self.cl = 40.0
+        self.cl = 180.0
         self.cs = 9897.0
         self.clist = np.array([[self.clab,self.cf,self.cr,self.cw,self.cl,\
                                 self.cs]])
@@ -37,15 +37,15 @@ class dalecData( ):
         self.p2 = 0.47 #f_auto, fraction of GPP respired  (0.3 - 0.7)
         self.p3 = 0.28 #f_fol, frac GPP to foliage        (0.01 - 0.5)
         self.p4 = 0.16 #f_roo, frac GPP to fine roots     (0.01 - 0.5)
-        self.p5 = 1.8 #clspan, leaf lifespan              (? - ?)
+        self.p5 = 1.02 #clspan, leaf lifespan              (1.0001 - 5)
         self.p6 = 0.00026 #theta_woo, wood C turnover     (2.5e-5 - 1e-3)day^-1
-        self.p7 = 0.000248 #theta_roo, root C turnover rate(1e-4 - 1e-2)day^-1
-        self.p8 = 0.00228 #theta_lit, litter C turnover    (1e-4 - 1e-2)day^-1
+        self.p7 = 0.00248 #theta_roo, root C turnover rate(1e-4 - 1e-2)day^-1
+        self.p8 = 0.00238 #theta_lit, litter C turnover    (1e-4 - 1e-2)day^-1
         self.p9 = 0.0000026 #theta_som, SOM C turnover    (1e-7 - 1e-3)day^-1 
         self.p10 = 0.0793 #Theta, temp dependence exp fact(0.018 - 0.08)
         self.p11 = 20. #ceff, canopy efficiency param     (10 - 100)        
         self.p12 = 130. #d_onset, clab release date       (1 - 365)
-        self.p13 = 0.050629 #f_lab, frac GPP to clab      (0.01 - 0.5)
+        self.p13 = 0.090629 #f_lab, frac GPP to clab      (0.01 - 0.5)
         self.p14 = 30. #cronset, clab release period      (10 - 100)
         self.p15 = 300. #d_fall, date of leaf fall        (1 - 365)
         self.p16 = 120. #crfall, leaf fall period         (10 - 100)

@@ -24,7 +24,7 @@ def rec(pvals, dC, x):
 def nee(pvals, dC, x):
     """Function calculates Net Ecosystem Exchange (nee).
     """
-    nee = (1.-pvals[7])*m.acm(pvals[1], pvals[22], pvals[16], dC, x) - \
+    nee = -(1.-pvals[7])*m.acm(pvals[1], pvals[22], pvals[16], dC, x) + \
           (pvals[13]*pvals[4] + pvals[14]*pvals[5])* \
           m.temp_term(pvals[15], dC, x)
     return nee
