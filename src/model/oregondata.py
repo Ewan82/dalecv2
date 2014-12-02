@@ -119,6 +119,11 @@ class dalecData( ):
         self.sigo_lf = 0.2**2
         self.sigo_lw = 0.2**2
         
+        self.errdict = {'clab':self.sigo_clab, 'cf':self.sigo_cf,\
+                        'cw':self.sigo_cw,'cl':self.sigo_cl,'cr':self.sigo_cr,\
+                        'cs':self.sigo_cs, 'nee':self.sigo_nee,\
+                        'lf':self.sigo_lf, 'lw':self.sigo_lw}
+
 
     def assimilation_obs(self, obs_str):
         possibleobs = ['gpp', 'lf', 'lw', 'rt', 'nee', 'cf', 'cl', \
@@ -142,6 +147,6 @@ class dalecData( ):
                 for ob in Obslist:
                     if allVars[i] == ob:
                         Obs_dict[ob][n] = float(allVars[i+1])
-                        Obs_err_dict[ob+'_err'][n] = float(allVars[i+2])
+                        Obs_err_dict[ob+'_err'][n] = self.errdict[ob]
                         
         return Obs_dict, Obs_err_dict

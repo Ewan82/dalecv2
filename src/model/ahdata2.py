@@ -23,29 +23,29 @@ class dalecData( ):
         self.timestep = np.arange(startrun, startrun+lenrun)
         
         #'I.C. for carbon pools gCm-2'   range
-        self.clab = 270.8               # (10,1e3)
+        self.clab = 100.8               # (10,1e3)
         self.cf = 10.0                  # (10,1e3)
         self.cr = 102.0                 # (10,1e3)
         self.cw = 8100.0                # (3e3,3e4)
-        self.cl = 300.0                 # (10,1e3) 
+        self.cl = 100.0                 # (10,1e3) 
         self.cs = 7200.0                # (1e3, 1e5)
         self.clist = np.array([[self.clab,self.cf,self.cr,self.cw,self.cl,\
                                 self.cs]])
         
         #'Parameters for optimization'                     range
-        self.p1 = 0.000941 #theta_min, cl to cs decomp    (1e-5 - 1e-2)day^-1
-        self.p2 = 0.47 #f_auto, fraction of GPP respired  (0.3 - 0.7)
-        self.p3 = 0.28 #f_fol, frac GPP to foliage        (0.01 - 0.5)
-        self.p4 = 0.26 #f_roo, frac GPP to fine roots     (0.01 - 0.5)
-        self.p5 = 1.01 #clspan, leaf lifespan             (1.0001 - 5)
-        self.p6 = 0.00026 #theta_woo, wood C turnover     (2.5e-5 - 1e-3)day^-1
-        self.p7 = 0.00248 #theta_roo, root C turnover rate(1e-4 - 1e-2)day^-1
-        self.p8 = 0.00338 #theta_lit, litter C turnover   (1e-4 - 1e-2)day^-1
-        self.p9 = 0.0000026 #theta_som, SOM C turnover    (1e-7 - 1e-3)day^-1 
-        self.p10 = 0.0193 #Theta, temp dependence exp fact(0.018 - 0.08)
-        self.p11 = 90. #ceff, canopy efficiency param     (10 - 100)        
+        self.p1 = 3e-3 #theta_min, cl to cs decomp    (1e-5 - 1e-2)day^-1
+        self.p2 = 0.32 #f_auto, fraction of GPP respired  (0.3 - 0.7)
+        self.p3 = 0.465 #f_fol, frac GPP to foliage        (0.01 - 0.5)
+        self.p4 = 0.32 #f_roo, frac GPP to fine roots     (0.01 - 0.5)
+        self.p5 = 1.025 #clspan, leaf lifespan             (1.0001 - 5)
+        self.p6 = 2e-4 #theta_woo, wood C turnover     (2.5e-5 - 1e-3)day^-1
+        self.p7 = 0.007 #theta_roo, root C turnover rate(1e-4 - 1e-2)day^-1
+        self.p8 = 0.025 #theta_lit, litter C turnover   (1e-4 - 1e-2)day^-1
+        self.p9 = 2e-4 #theta_som, SOM C turnover    (1e-7 - 1e-3)day^-1 
+        self.p10 = 0.069 #Theta, temp dependence exp fact(0.018 - 0.08)
+        self.p11 = 30. #ceff, canopy efficiency param     (10 - 100)        
         self.p12 = 140. #d_onset, clab release date       (1 - 365) (60,150)
-        self.p13 = 0.4629 #f_lab, frac GPP to clab        (0.01 - 0.5)
+        self.p13 = 0.06 #f_lab, frac GPP to clab        (0.01 - 0.5)
         self.p14 = 27. #cronset, clab release period      (10 - 100)
         self.p15 = 308. #d_fall, date of leaf fall        (1 - 365) (242,332)
         self.p16 = 35. #crfall, leaf fall period          (10 - 100)

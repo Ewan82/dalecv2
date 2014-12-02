@@ -36,7 +36,7 @@ def data(filename):
         elif qcflag > 1:
             nee[x] = float('NaN')
         else:
-            nee[x] = 12*1e-6*30*60*np.sum(fluxdata['nee'][48*x:48*x+48])
+            nee[x] = (12.011)*1e-6*30*60*np.sum(fluxdata['nee'][48*x:48*x+48])
             
     return np.array([year, day, t_mean, t_max, t_min, I, nee])
     

@@ -117,11 +117,12 @@ def findmin(pvals, obdict, oberrdict, dC, start, fin, meth='L-BFGS-B',\
               (10,100),(1,365),(0.01,0.5),(10,100),(1,365),(10,100),(10,400))
     else:
         bnds=((0,None),(0,None),(0,None),(0,None),(0,None),(0,None),(0,None),\
-              (0,None),(0,None),(0,None),(1.1,None),(0,None),(0,None),(0,None),\
+              (0,None),(0,None),(0,None),(1.0001,None),(0,None),(0,None),(0,None),\
               (0,None),(0,None),(0,None),(0,None),(0,None),(0,None),(0,None),\
               (0,None),(0,None))
     findmin = spop.minimize(cost, pvals, args=(obdict, oberrdict, dC, start,\
-              fin,), method=meth, jac=fprime, bounds=bnds)
+              fin,), method=meth, jac=fprime, bounds=bnds,\
+              options={'gtol': 1e-6, 'disp': True})
     return findmin
     
     
