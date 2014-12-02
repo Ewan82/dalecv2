@@ -36,10 +36,7 @@ class dalecData( ):
         self.cs = 9897.0
         self.clist = np.array([[self.clab,self.cf,self.cr,self.cw,self.cl,\
                                 self.cs]])
-        bnds=((10,1000),(10,1000),(10,1000),(100,1e5),(10,1000),(100,2e5),\
-              (1e-5,1e-2),(0.3,0.7),(0.01,0.5),(0.01,0.5),(1.0001,10.),\
-              (2.5e-5,1e-3),(1e-4,1e-2),(1e-4,1e-2),(1e-7,1e-3),(0.018,0.08),\
-              (10,100),(1,365),(0.01,0.5),(10,100),(1,365),(10,100),(10,400))        
+        
         #'Parameters for optimization'                     range
         self.p1 = 0.0000441 #theta_min, cl to cs decomp  (1e-2 - 1e-5)day^-1
         self.p2 = 0.47 #f_auto, fraction of GPP respired  (0.3 - 0.7)
@@ -70,7 +67,11 @@ class dalecData( ):
                        ('d_onset', self.p12), ('f_lab', self.p13), 
                        ('cronset', self.p14), ('d_fall', self.p15), 
                        ('crfall', self.p16), ('clma', self.p17)])
-        self.pvals = np.array(self.paramdict.values())        
+        self.pvals = np.array(self.paramdict.values())    
+        self.bnds=((10,1000),(10,1000),(10,1000),(100,1e5),(10,1000),(100,2e5),\
+              (1e-5,1e-2),(0.3,0.7),(0.01,0.5),(0.01,0.5),(1.0001,10.),\
+              (2.5e-5,1e-3),(1e-4,1e-2),(1e-4,1e-2),(1e-7,1e-3),(0.018,0.08),\
+              (10,100),(1,365),(0.01,0.5),(10,100),(1,365),(10,100),(10,400))
         
         #Constants for ACM model 
         #(currently using parameters from williams spreadsheet values)
