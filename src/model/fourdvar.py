@@ -122,7 +122,7 @@ def findmin(pvals, obdict, oberrdict, dC, start, fin, meth='L-BFGS-B',\
               (0,None),(0,None))
     findmin = spop.minimize(cost, pvals, args=(obdict, oberrdict, dC, start,\
               fin,), method=meth, jac=fprime, bounds=bnds,\
-              options={'gtol': 1e-6, 'disp': True})
+              options={'gtol': 1e-6, 'disp': True, 'iprint':2})
     return findmin
     
     
