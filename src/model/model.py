@@ -89,19 +89,16 @@ def dalecv2(clab, cf, cr, cw, cl, cs, theta_min, f_auto, f_fol, f_roo, clspan,
     and 17 parameters at time t and evolving them to time t+1. Function also 
     requires a dataClass (dC) and a time step x.
     """
-    clab2 = (1 - phi_onset(d_onset, cronset, dC, x))*clab + (1-f_auto)*(1-f_fol)\
-            *f_lab*acm(cf, clma, ceff, dC, x)
-    cf2 = (1 - phi_fall(d_fall, crfall, clspan, dC, x))*cf + \
-          phi_onset(d_onset, cronset, dC, x)*clab + (1-f_auto)*f_fol*\
-          acm(cf, clma, ceff, dC, x)
-    cr2 = (1 - theta_roo)*cr + (1-f_auto)*(1-f_fol)*(1-f_lab)*f_roo*\
-          acm(cf, clma, ceff, dC, x)
-    cw2 = (1 - theta_woo)*cw + (1-f_auto)*(1-f_fol)*(1-f_lab)*(1-f_roo)*\
-          acm(cf, clma, ceff, dC, x)
-    cl2 = (1-(theta_lit+theta_min)*temp_term(Theta, dC, x))*cl + theta_roo*cr \
-          +phi_fall(d_fall, crfall, clspan, dC, x)*cf
-    cs2 = (1 - theta_som*temp_term(Theta, dC, x))*cs + theta_woo*cw + \
-          theta_min*temp_term(Theta, dC, x)*cl
+    phi_on = phi_onset(d_onset, cronset, dC, x)
+    phi_off = phi_fall(d_fall, crfall, clspan, dC, x)
+    gpp = acm(cf, clma, ceff, dC, x)
+    temp = temp_term(Theta, dC, x)
+    clab2 = (1 - phi_on)*clab + (1-f_auto)*(1-f_fol)*f_lab*gpp
+    cf2 = (1 - phi_off)*cf + phi_on*clab + (1-f_auto)*f_fol*gpp
+    cr2 = (1 - theta_roo)*cr + (1-f_auto)*(1-f_fol)*(1-f_lab)*f_roo*gpp
+    cw2 = (1 - theta_woo)*cw + (1-f_auto)*(1-f_fol)*(1-f_lab)*(1-f_roo)*gpp
+    cl2 = (1-(theta_lit+theta_min)*temp)*cl + theta_roo*cr + phi_off*cf
+    cs2 = (1 - theta_som*temp)*cs + theta_woo*cw + theta_min*temp*cl
     return np.array((clab2, cf2, cr2, cw2, cl2, cs2, theta_min, f_auto, f_fol, 
            f_roo, clspan, theta_woo, theta_roo, theta_lit, theta_som, Theta, ceff, 
            d_onset, f_lab, cronset, d_fall, crfall, clma))

@@ -70,6 +70,11 @@ def plot4dvarrun(ob, xb, xa, dC, start, fin):
     
     
 def plotlinmoderr(cpool, dC, start, fin):
+    """Plots the error for the linearized estimate to the evolution of a carbon
+    pool and the nonlinear models evolution of a carbon pool for comparision 
+    and to see if the linear model satisfies the tangent linear hypoethesis.
+    Takes a carbon pool as a string, a dataClass and a start and finish point.
+    """
     pooldict={'clab':0, 'cf':1, 'cr':2, 'cw':3, 'cl':4, 'cs':5}
     cx, matlist = m.linmod_list(dC.pvals, dC, start, fin)
     dC2 = cp.copy(dC)

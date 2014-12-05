@@ -127,7 +127,7 @@ def findmin(pvals, obdict, oberrdict, dC, start, fin, meth='L-BFGS-B',\
     
     
 def findminglob(pvals, obdict, oberrdict, dC, start, fin, it=100,\
-                bnds='strict', stpsize=0.5, temp=1.):
+                bnds='strict', stpsize=0.5, temp=1., fprime=gradcost):
     """Function which minimizes 4DVAR cost fn. Takes an initial state (pvals),
     an obs dictionary, an obs error dictionary, a dataClass and a start and 
     finish time step.
@@ -141,5 +141,5 @@ def findminglob(pvals, obdict, oberrdict, dC, start, fin, it=100,\
         bnds = bnds
     findmin = spop.basinhopping(cost, pvals, niter=it, minimizer_kwargs={\
               'method': 'L-BFGS-B', 'args':(obdict, oberrdict, dC, start,fin),\
-              'bounds':bnds}, stepsize=stpsize, T=temp)
+              'bounds':bnds, 'jac':fprime}, stepsize=stpsize, T=temp)
     return findmin

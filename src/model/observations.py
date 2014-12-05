@@ -92,7 +92,8 @@ def cs(pvals, dC, x):
     cs = pvals[5]
     return cs
     
-    
+#REDO with a list of obs as optional input!! Then ad can do rest. 
+#import inspect, inspect.getargspec
 def linob(ob, pvals, dC, x):
     """Function returning jacobian of observation with respect to the parameter
     list. Takes an obs string, a parameters list, a dataClass and a time step
