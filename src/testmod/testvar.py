@@ -36,12 +36,12 @@ def test_costsumfn(alph=1e-9):
 def test_cost(alph=1e-8):
     """Test for cost and gradcost functions.
     """
-    d = dC.dalecData(10,147)
-    obdict, oberrdict = d.assimilation_obs('nee')
-    gradj = var.gradcost(d.pvals, obdict, oberrdict, d, 0, 10)
+    d = dC.dalecData(300)
+    obdict, oberrdict = d.assimilation_obs('gpp')
+    gradj = var.gradcost(d.pvals, obdict, oberrdict, d, 0, 300)
     h = gradj*(np.linalg.norm(gradj))**(-1)
-    j = var.cost(d.pvals, obdict, oberrdict, d, 0, 10)
-    jalph = var.cost(d.pvals + alph*h, obdict, oberrdict, d, 0, 10)
+    j = var.cost(d.pvals, obdict, oberrdict, d, 0, 300)
+    jalph = var.cost(d.pvals + alph*h, obdict, oberrdict, d, 0, 300)
     return (jalph-j) / (np.dot(alph*h, gradj))
     
     
@@ -58,8 +58,11 @@ def test_costsum(alph=1e-8):
     
     
 def plotcost():
-    power=np.arange(5,12,1)
+    power=np.arange(1,12,1)
     xlist = [10**(-x) for x in power]
     tstlist = [test_cost(x) for x in xlist]
-    plt.plot(xlist, tstlist)
+    plt.loglog(xlist, tstlist)
+    plt.xlabel('alpha')
+    plt.ylabel('grad test function')
+    print tstlist
     plt.show()

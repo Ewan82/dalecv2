@@ -126,7 +126,7 @@ class dalecData( ):
         self.errdict = {'clab':self.sigo_clab, 'cf':self.sigo_cf,\
                         'cw':self.sigo_cw,'cl':self.sigo_cl,'cr':self.sigo_cr,\
                         'cs':self.sigo_cs, 'nee':self.sigo_nee,\
-                        'lf':self.sigo_lf, 'lw':self.sigo_lw}
+                        'lf':self.sigo_lf, 'lw':self.sigo_lw, 'gpp':0.2}
 
 
     def assimilation_obs(self, obs_str):
