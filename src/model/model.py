@@ -4,14 +4,15 @@ import numpy as np
 import ad
 import ad.admath as adm
 
+
 def fitpolynomial(evalpoint, multfac):
     """Polynomial used to find phi_f and phi (offset terms used in phi_onset 
     and phi_fall), given an evaluation point for the polynomial and a 
     multiplication term.
     """
     polycoeffs = [2.359978471e-05, 0.000332730053021, 0.000901865258885,
-                      -0.005437736864888, -0.020836027517787, 0.126972018064287,
-                      -0.188459767342504]
+                  -0.005437736864888, -0.020836027517787, 0.126972018064287,
+                  -0.188459767342504]
     phi = np.polyval(polycoeffs, evalpoint)*multfac
     return phi
     
@@ -93,12 +94,14 @@ def dalecv2(clab, cf, cr, cw, cl, cs, theta_min, f_auto, f_fol, f_roo, clspan,
     phi_off = phi_fall(d_fall, crfall, clspan, dC, x)
     gpp = acm(cf, clma, ceff, dC, x)
     temp = temp_term(Theta, dC, x)
+    
     clab2 = (1 - phi_on)*clab + (1-f_auto)*(1-f_fol)*f_lab*gpp
     cf2 = (1 - phi_off)*cf + phi_on*clab + (1-f_auto)*f_fol*gpp
     cr2 = (1 - theta_roo)*cr + (1-f_auto)*(1-f_fol)*(1-f_lab)*f_roo*gpp
     cw2 = (1 - theta_woo)*cw + (1-f_auto)*(1-f_fol)*(1-f_lab)*(1-f_roo)*gpp
     cl2 = (1-(theta_lit+theta_min)*temp)*cl + theta_roo*cr + phi_off*cf
     cs2 = (1 - theta_som*temp)*cs + theta_woo*cw + theta_min*temp*cl
+    
     return np.array((clab2, cf2, cr2, cw2, cl2, cs2, theta_min, f_auto, f_fol, 
            f_roo, clspan, theta_woo, theta_roo, theta_lit, theta_som, Theta, ceff, 
            d_onset, f_lab, cronset, d_fall, crfall, clma))
@@ -124,7 +127,8 @@ def lin_dalecv2(pvals, dC, x):
                           p[9], p[10], p[11], p[12], p[13], p[14], p[15], p[16],
                           p[17], p[18], p[19], p[20], p[21], p[22], dC, x)
     lin_model = ad.jacobian(dalecoutput, p)
-    return dalecoutput, lin_model
+    modval = np.array([float(x) for x in dalecoutput])
+    return modval, lin_model
     
     
 def mod_list(pvals, dC, start, fin):
@@ -146,9 +150,28 @@ def linmod_list(pvals, dC, start, fin):
     mod_list = np.concatenate((np.array([pvals]),\
                                np.ones((fin - start, len(pvals)))*-9999.))
     matlist = np.ones((fin - start,23,23))*-9999.
+    ldv2=lin_dalecv2
     for x in xrange(start, fin):
         mod_list[(x+1)-start], matlist[x-start] =\
-                                          lin_dalecv2(mod_list[x-start], dC, x)
+                                          ldv2(mod_list[x-start], dC, x)
+    return mod_list, matlist
+    
+    
+def linmod_list2(pvals, dC, start, fin):
+    """Creates an array of linearized models (Mi's) taking a list of initial 
+    param values, a dataClass (dC) and a start and finish time.
+    """
+    mod_list = np.concatenate((np.array([pvals]),\
+                               np.ones((fin - start, len(pvals)))*-9999.))
+    matlist = np.ones((fin - start,23,23))*-9999.
+    dv2=dalecv2_input
+    
+    for x in xrange(start, fin):
+        p=ad.adnumber(mod_list[x-start])
+        mod_list[(x+1)-start] = dv2(p, dC, x)
+        matlist[x-start] = ad.jacobian(mod_list[(x+1)-start], p)
+        mod_list[(x+1)-start] = np.array([float(y) for y in\
+                                         mod_list[(x+1)-start]])
     return mod_list, matlist
 
     
